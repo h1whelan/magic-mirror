@@ -6,6 +6,7 @@ import './App.css'
 // Widget components
 import Clock from './widgets/Clock'
 import Rail from './widgets/Rail'
+import Weather from './widgets/Weather'
 
 function App() {
   const [isWidgetsVisible, setWidgetsVisible] = useState(false)
@@ -33,6 +34,8 @@ function App() {
         }}
         onClick={toggleWidgets}
       >
+        <Clock subtle={true} />
+
         <AppShell
           padding="md"
           style={{ 
@@ -57,9 +60,8 @@ function App() {
                 }}
               >
                 <Stack spacing="xl" align="stretch" style={{ flex: 1, maxWidth: '600px', margin: '0 auto', width: '100%' }}>
-                  <Clock />
+                  <Weather />
                   <Rail />
-                  {/* Other widgets will be added here */}
                 </Stack>
               </motion.div>
             )}
