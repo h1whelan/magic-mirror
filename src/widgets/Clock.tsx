@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Text, Stack } from '@mantine/core';
 
-function Clock() {
+interface ClockProps {
+  subtle?: boolean;
+}
+
+function Clock({ subtle = false }: ClockProps) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -12,6 +16,32 @@ function Clock() {
 
     return () => clearInterval(timer);
   }, []);
+
+  if (subtle) {
+    return (
+      <Stack 
+        spacing={0} 
+        align="flex-end" 
+        style={{ 
+          position: 'fixed',
+          top: '1rem',
+          right: '1rem',
+          zIndex: 1000,
+          background: 'rgba(0, 0, 0, 0.3)',
+          padding: '0.5rem 1rem',
+          borderRadius: '8px',
+          backdropFilter: 'blur(5px)',
+        }}
+      >
+        <Text size="2rem" weight={700} style={{ lineHeight: 1, opacity: 0.5 }}>
+          {format(time, 'HH:mm')}
+        </Text>
+        <Text size="0.9rem" color="dimmed" style={{ opacity: 0.4 }}>
+          {format(time, 'EEEE, MMMM d')}
+        </Text>
+      </Stack>
+    );
+  }
 
   return (
     <div className="widget">
