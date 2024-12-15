@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Text, Stack, Group, Loader } from '@mantine/core';
 import axios from 'axios';
-import { WiThermometer, WiHumidity, WiStrongWind } from 'react-icons/wi';
-import { format } from 'date-fns';
+import { WiHumidity, WiStrongWind } from 'react-icons/wi';
 
 interface WeatherData {
   temperature: number;
@@ -10,14 +9,6 @@ interface WeatherData {
   windSpeed: number;
   description: string;
   icon: string;
-  forecast: ForecastData[];
-}
-
-interface ForecastData {
-  time: string;
-  temperature: number;
-  icon: string;
-  description: string;
 }
 
 function Weather() {
@@ -35,20 +26,8 @@ function Weather() {
         throw new Error('Weather API configuration missing');
       }
 
-      // Fetch current weather and forecast using One Call API
       const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&exclude=minutely,alerts`;
       const response = await axios.get(url);
-      
-      // Get hourly forecast for next 24 hours, at 3-hour intervals
-      const hourlyForecast = response.data.hourly
-        .filter((_: any, index: number) => index % 3 === 0) // Every 3 hours
-        .slice(0, 8) // Next 24 hours (8 x 3 = 24)
-        .map((hour: any) => ({
-          time: format(new Date(hour.dt * 1000), 'HH:mm'),
-          temperature: Math.round(hour.temp),
-          icon: hour.weather[0].icon,
-          description: hour.weather[0].description,
-        }));
 
       setWeather({
         temperature: Math.round(response.data.current.temp),
@@ -56,7 +35,6 @@ function Weather() {
         windSpeed: Math.round(response.data.current.wind_speed),
         description: response.data.current.weather[0].description,
         icon: response.data.current.weather[0].icon,
-        forecast: hourlyForecast,
       });
       setError(null);
     } catch (err: any) {
@@ -71,7 +49,7 @@ function Weather() {
 
   useEffect(() => {
     fetchWeather();
-    const interval = setInterval(fetchWeather, 300000); // Update every 5 minutes
+    const interval = setInterval(fetchWeather, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -103,65 +81,37 @@ function Weather() {
 
   return (
     <div className="widget">
-      <Stack spacing="md">
-        {/* Current Weather */}
-        <Group position="apart" align="flex-start">
-          <Stack spacing={0}>
-            <Text size="3rem" weight={700} style={{ lineHeight: 1.1 }}>
-              {weather.temperature}°C
-            </Text>
-            <Text size="lg" color="dimmed" transform="capitalize">
+      <Stack spacing="xl">
+        <Text size="sm" weight={500}>CURRENT WEATHER</Text>
+        
+        <Group position="apart" align="flex-start" style={{ width: '100%' }}>
+          <Stack spacing={4}>
+            <Group spacing="md" align="center">
+              <img
+                src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+                alt={weather.description}
+                style={{ width: '64px', height: '64px', margin: '-12px' }}
+              />
+              <Text size="3rem" weight={700} style={{ lineHeight: 1 }}>
+                {weather.temperature}°C
+              </Text>
+            </Group>
+            <Text size="sm" color="dimmed" transform="capitalize" ml="md">
               {weather.description}
             </Text>
           </Stack>
-          <img
-            src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-            alt={weather.description}
-            style={{ width: '64px', height: '64px' }}
-          />
-        </Group>
-        
-        {/* Current Details */}
-        <Group spacing="xl">
-          <Group spacing="xs">
-            <WiThermometer size={24} />
-            <Text>{weather.temperature}°C</Text>
-          </Group>
-          <Group spacing="xs">
-            <WiHumidity size={24} />
-            <Text>{weather.humidity}%</Text>
-          </Group>
-          <Group spacing="xs">
-            <WiStrongWind size={24} />
-            <Text>{weather.windSpeed} m/s</Text>
-          </Group>
-        </Group>
 
-        {/* Hourly Forecast */}
-        <Stack spacing="sm">
-          <Text size="sm" color="dimmed" weight={500}>
-            24-HOUR FORECAST
-          </Text>
-          <div style={{ overflowX: 'auto' }}>
-            <Group spacing="xl" noWrap style={{ minWidth: 'min-content' }}>
-              {weather.forecast.map((forecast, index) => (
-                <Stack key={index} spacing={4} align="center">
-                  <Text size="sm" color="dimmed">
-                    {forecast.time}
-                  </Text>
-                  <img
-                    src={`https://openweathermap.org/img/wn/${forecast.icon}.png`}
-                    alt={forecast.description}
-                    style={{ width: '40px', height: '40px' }}
-                  />
-                  <Text size="sm" weight={500}>
-                    {forecast.temperature}°C
-                  </Text>
-                </Stack>
-              ))}
+          <Stack spacing="lg" align="flex-start">
+            <Group spacing="sm" noWrap>
+              <WiHumidity size={22} style={{ opacity: 0.7 }} />
+              <Text size="sm" style={{ minWidth: '4rem' }}>{weather.humidity}%</Text>
             </Group>
-          </div>
-        </Stack>
+            <Group spacing="sm" noWrap>
+              <WiStrongWind size={22} style={{ opacity: 0.7 }} />
+              <Text size="sm">{weather.windSpeed}m/s</Text>
+            </Group>
+          </Stack>
+        </Group>
       </Stack>
     </div>
   );
