@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { MantineProvider, AppShell, Stack } from '@mantine/core'
+import { MantineProvider, AppShell, Stack, Group } from '@mantine/core'
 import { motion, AnimatePresence } from 'framer-motion'
 import './App.css'
 
@@ -7,6 +7,7 @@ import './App.css'
 import Clock from './widgets/Clock'
 import Rail from './widgets/Rail'
 import Weather from './widgets/Weather'
+import Forecast from './widgets/Forecast'
 
 function App() {
   const [isWidgetsVisible, setWidgetsVisible] = useState(false)
@@ -59,10 +60,26 @@ function App() {
                   padding: '2rem',
                 }}
               >
-                <Stack spacing="xl" align="stretch" style={{ flex: 1, maxWidth: '600px', margin: '0 auto', width: '100%' }}>
-                  <Weather />
+                <div style={{ 
+                  display: 'flex',
+                  gap: '2rem',
+                  justifyContent: 'center',
+                  marginBottom: '2rem'
+                }}>
+                  <div style={{ flex: '0 1 400px' }}>
+                    <Weather />
+                  </div>
+                  <div style={{ flex: '0 1 400px' }}>
+                    <Forecast />
+                  </div>
+                </div>
+                <div style={{ 
+                  maxWidth: '800px',
+                  margin: '0 auto',
+                  width: '100%'
+                }}>
                   <Rail />
-                </Stack>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
