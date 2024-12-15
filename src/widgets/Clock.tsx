@@ -20,24 +20,25 @@ function Clock({ subtle = false }: ClockProps) {
   if (subtle) {
     return (
       <Stack 
-        spacing={0} 
+        spacing={2} 
         align="flex-end" 
         style={{ 
           position: 'fixed',
-          top: '1rem',
-          right: '1rem',
+          top: '0.75rem',
+          right: '0.75rem',
           zIndex: 1000,
           background: 'rgba(0, 0, 0, 0.3)',
-          padding: '0.5rem 1rem',
+          padding: '0.5rem 0.75rem',
           borderRadius: '8px',
           backdropFilter: 'blur(5px)',
+          maxWidth: '30%',
         }}
       >
-        <Text size="2rem" weight={700} style={{ lineHeight: 1, opacity: 0.5 }}>
+        <Text size="1.5rem" weight={700} style={{ lineHeight: 1, opacity: 0.5 }}>
           {format(time, 'HH:mm')}
         </Text>
-        <Text size="0.9rem" color="dimmed" style={{ opacity: 0.4 }}>
-          {format(time, 'EEEE, MMMM d')}
+        <Text size="0.75rem" color="dimmed" style={{ opacity: 0.4 }}>
+          {format(time, 'EEEE, MMM d')}
         </Text>
       </Stack>
     );
@@ -46,13 +47,13 @@ function Clock({ subtle = false }: ClockProps) {
   return (
     <div className="widget">
       <Stack spacing={0} align="center">
-        <Text size="6rem" weight={700} style={{ lineHeight: 1.1 }}>
+        <Text size="5rem" weight={700} style={{ lineHeight: 1.1 }}>
           {format(time, 'HH:mm')}
         </Text>
-        <Text size="2rem" color="dimmed" style={{ marginTop: '0.5rem' }}>
+        <Text size="1.5rem" color="dimmed" style={{ marginTop: '0.5rem' }}>
           {format(time, 'EEEE')}
         </Text>
-        <Text size="1.5rem" color="dimmed">
+        <Text size="1.25rem" color="dimmed">
           {format(time, 'MMMM d')}
         </Text>
       </Stack>
