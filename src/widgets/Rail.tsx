@@ -28,7 +28,7 @@ function Rail() {
             'Accept': 'application/json'
           },
           params: {
-            numRows: 4,
+            numRows: 10,
             timeWindow: 120,
             timeOffset: 0
           }
@@ -43,14 +43,29 @@ function Rail() {
         return;
       }
 
-      const transformedServices = trainServices.map((service: any) => ({
-        scheduledDeparture: service.std,
-        estimatedDeparture: service.std,
-        destination: service.destination[0].locationName,
-        platform: service.platform,
-        status: service.etd,
-        operator: service.operator
-      }));
+      const transformedServices = trainServices
+        .filter((service: any) => {
+          const destination = service.destination[0].locationName.toLowerCase();
+          console.log('Train destination:', destination);
+          return destination.includes('london') || 
+                 destination.includes('charing cross') || 
+                 destination.includes('cannon') || 
+                 destination.includes('bridge');
+        })
+        .map((service: any) => ({
+          scheduledDeparture: service.std,
+          estimatedDeparture: service.std,
+          destination: service.destination[0].locationName,
+          platform: service.platform,
+          status: service.etd,
+          operator: service.operator
+        }));
+
+      if (transformedServices.length === 0) {
+        setError('No London-bound trains found');
+        setServices([]);
+        return;
+      }
 
       setServices(transformedServices);
       setError(null);
@@ -93,23 +108,22 @@ function Rail() {
   }
 
   return (
-    <div className="widget" style={{ padding: '1rem' }}>
-      <Stack spacing="sm">
+    <div className="widget">
+      <Stack spacing="lg">
         <Group position="apart" align="baseline">
           <Text 
-            size="xl" 
-            weight={700} 
+            size="sm"
+            weight={500}
             style={{ 
-              fontFamily: 'monospace',
               color: 'rgba(255, 255, 255, 0.9)'
             }}
           >
             DEPARTURES
           </Text>
           <Text 
-            size="lg"
+            size="sm"
+            weight={500}
             style={{ 
-              fontFamily: 'monospace',
               color: 'rgba(255, 255, 255, 0.7)'
             }}
           >
@@ -119,8 +133,8 @@ function Rail() {
         
         <div style={{ overflowX: 'auto' }}>
           <Table 
-            fontSize="lg"
-            verticalSpacing="sm"
+            fontSize="sm"
+            verticalSpacing="md"
             style={{ 
               fontFamily: 'monospace',
               minWidth: '100%'
