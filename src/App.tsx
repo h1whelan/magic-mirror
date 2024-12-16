@@ -8,6 +8,8 @@ import Clock from './widgets/Clock'
 import Rail from './widgets/Rail'
 import Weather from './widgets/Weather'
 import Forecast from './widgets/Forecast'
+import Headlines from './widgets/Headlines'
+import Photos from './widgets/Photos'
 
 function App() {
   const [isWidgetsVisible, setWidgetsVisible] = useState(false)
@@ -74,11 +76,19 @@ function App() {
                   </div>
                 </div>
                 <div style={{ 
-                  maxWidth: '800px',
+                  display: 'flex',
+                  gap: '2rem',
+                  maxWidth: '1200px',
                   margin: '0 auto',
                   width: '100%'
                 }}>
-                  <Rail />
+                  <div style={{ flex: '1' }}>
+                    <Rail />
+                  </div>
+                  <div style={{ flex: '0 1 400px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    <Headlines />
+                    <Photos />
+                  </div>
                 </div>
               </motion.div>
             )}
